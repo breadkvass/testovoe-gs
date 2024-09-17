@@ -1,0 +1,80 @@
+
+.ticket {
+    color: black;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    font-size: 18px;
+}
+
+.airports {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 0 8px 5px;
+    border-bottom: 2px solid #E5E5E5;
+}
+
+.arrow {
+    color: white;
+    height: 15px;
+}
+
+.icon {
+    width: 15px;
+}
+
+.timing {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 8px 5px 5px 5px;
+}
+
+.arrival {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+
+.duration {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+
+
+.transfers {
+    position: relative;
+}
+
+.transfer {
+    position: absolute;
+    padding: 5px 25px;
+    background-color: white;
+    left: 206px;
+    top: -6px;
+    color: #FFB168;
+    font-size: 15px;
+}
+
+.line {
+    display: block;
+    height: 1px;
+    border: none;          
+    border-top: 1px solid #A2A2A2;
+    margin: .5em auto;
+    padding: 0;
+    width: 480px;       
+}
+
+.company {
+    margin: 0;
+    padding-left: 5px;
+    font-size: 15px;
+}

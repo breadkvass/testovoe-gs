@@ -1,0 +1,9 @@
+.cities {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+
+.uid {
+    color: #0087C9;
+}

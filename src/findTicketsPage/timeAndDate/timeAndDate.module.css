@@ -1,0 +1,23 @@
+.date {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+
+.reverse {
+    flex-direction: row-reverse;
+}
+
+.left {
+    margin-right: auto;
+}
+
+.right {
+    margin-left: auto;
+}
+
+.small {
+    font-size: 15px;
+    color: #0087C9;
+}

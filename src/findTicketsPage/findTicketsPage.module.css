@@ -1,0 +1,56 @@
+.page {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+}
+
+.list {
+    padding: 0;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+.tickets {
+    width: 560px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button {
+    margin-bottom: 100px;
+    padding: 4px 20px;
+    border-radius: none;
+    font-size: 18px;
+}
+
+.filter {
+    background-color: white;
+    width: 100%;
+    padding: 30px 16px;
+    color: #425668;
+}
+
+.sorter {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.title {
+    font-size: 15px;
+    color: #425668;
+    font-weight: 600;
+}
+
+.label {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+}

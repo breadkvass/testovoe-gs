@@ -1,0 +1,19 @@
+.filter {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.title {
+    font-size: 15px;
+    color: #425668;
+    font-weight: 600;
+}
+
+.label {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 4px;
+}
