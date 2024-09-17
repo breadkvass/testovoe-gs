@@ -1,4 +1,10 @@
+import { FC, ChangeEvent } from 'react';
 import styles from './companiesFilter.module.css';
+
+type CompaniesFilterProps = {
+    filters: CompanyFilterItem[];
+    onChange: (itemKey: string, enabled: boolean) => void;
+}
 
 export type CompanyFilterItem = {
     key: string;
@@ -7,14 +13,9 @@ export type CompanyFilterItem = {
     enabled: boolean;
 }
 
-type CompaniesFilterProps = {
-    filters: CompanyFilterItem[];
-    onChange: (itemKey: string, enabled: boolean) => void;
-}
-
-const CompaniesFilter: React.FC<CompaniesFilterProps> = ({filters, onChange}) => {
+const CompaniesFilter: FC<CompaniesFilterProps> = ({filters, onChange}) => {
  
-    const inputChangeHandler = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    const inputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         onChange(event.target.value, event.target.checked)
     }
 

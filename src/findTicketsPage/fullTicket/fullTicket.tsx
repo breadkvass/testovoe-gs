@@ -1,10 +1,12 @@
-import styles from './fullTicket.module.css';
+import { FC } from 'react';
 import logo from '../../assets/images/logo.png';
 import Ticket from '../ticket/ticket';
+import styles from './fullTicket.module.css';
 
-function FullTicket(flight: any) {
+const FullTicket: FC<any> = (flight) => {
     
     const flightInfo = flight.flight?.flight;
+
     const price = flightInfo?.price?.passengerPrices[0]?.singlePassengerTotal?.amount;
     const ticketThere = flightInfo?.legs[0];
     const ticketBack = flightInfo?.legs[1];

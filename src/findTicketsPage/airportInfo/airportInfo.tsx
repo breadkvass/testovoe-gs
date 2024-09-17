@@ -1,7 +1,13 @@
+import { FC } from 'react';
 import styles from './airportInfo.module.css';
-import { DepartureAndArrival } from '../../types';
 
-function AirportInfo({city, airport, airportUid}: DepartureAndArrival) {
+export type AirportInfoProps = {
+    airport: string;
+    airportUid: string;
+    city: string;
+}
+
+const AirportInfo: FC<AirportInfoProps> = ({city, airport, airportUid}) => {
     return (
         <div className={styles.cities}>
             <p>{city},</p>

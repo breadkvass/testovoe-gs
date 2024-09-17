@@ -1,28 +1,24 @@
-import styles from './findTicketsPage.module.css';
-import Sidebar from '../sidebar/sidebar';
-import { useState, useEffect } from 'react';
-import FullTicket from './fullTicket/fullTicket';
+import { useState, useEffect, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import Sorter from './sorter/sorter';
+import { CompanyFilterItem } from './companiesFilter/companiesFilter';
+import Sidebar from '../sidebar/sidebar';
+import FullTicket from './fullTicket/fullTicket';
+import Sorter, { SorterType } from './sorter/sorter';
 import TransferFilter from './TransferFilter/transferFilter';
 import PriceFilter from './priceFilter/priceFilter';
-import CompaniesFilter, { CompanyFilterItem } from './companiesFilter/companiesFilter';
-import { sort } from '../utils/sorters';
+import CompaniesFilter from './companiesFilter/companiesFilter';
+import styles from './findTicketsPage.module.css';
 
-function FindTicketsPage() {
+const FindTicketsPage = () => {
     const [ allFlights, setAllFlights ] = useState<any[]>([]);
     const [ flightsQuantity, setFlightsQuantity ] = useState<number>(2);
-    const [ sorter, setSorter ] = useState('ascPrice');
-    const [ singleTransfer, setSingleTransfer ] = useState<boolean>(false);
+    const [ sorter, setSorter ] = useState<SorterType>('price_asc');
+    const [ oneTransfer, setOneTransfer ] = useState<boolean>(false);
     const [ noTransfer, setNoTransfer ] = useState<boolean>(false);
-    const [ minPrice, setMinPrice ] = useState('');
-    const [ maxPrice, setMaxPrice ] = useState('');
+    const [ minPrice, setMinPrice ] = useState<number | null>(null);
+    const [ maxPrice, setMaxPrice ] = useState<number | null>(null);
     const [ companiesFilter, setCompaniesFilter ] = useState<CompanyFilterItem[]>([]);
 
-    const clickHandler = () => {
-        setFlightsQuantity(flightsQuantity + 2);
-    }
-    
     useEffect(() => {
         fetch('./flights.json')
             .then(response => {
@@ -39,52 +35,49 @@ function FindTicketsPage() {
         
     }, [])
 
-    const getData = () => {
+    const flights = useMemo(() => {
         let flightsToShow = allFlights;
-        if (singleTransfer || noTransfer) {
+        let enabledCompaniesFilters = companiesFilter.filter(filter => filter.enabled).map(filter => filter.name);
+
+        if (oneTransfer || noTransfer) {
             flightsToShow = flightsToShow
                 .filter(item => {
                     return (noTransfer && ((item.flight.legs[0].segments.length === 1) && (item.flight.legs[1].segments.length === 1)))
-                        || (singleTransfer && ((item.flight.legs[0].segments.length === 2) || (item.flight.legs[1].segments.length === 2)))
+                        || (oneTransfer && ((item.flight.legs[0].segments.length === 2) || (item.flight.legs[1].segments.length === 2)))
                 });
         } 
 
-        if (minPrice && maxPrice) {
+        if (minPrice) {
             flightsToShow = flightsToShow
                 .filter(item => {
-                    return ((item.flight.price.total.amount >= Number(minPrice)) && (item.flight.price.total.amount <= Number(maxPrice)))
+                    return (item.flight.price.total.amount >= minPrice)
                 });
-        } else if (minPrice) {
+        } 
+
+        if (maxPrice) {
             flightsToShow = flightsToShow
                 .filter(item => {
-                    return (item.flight.price.total.amount >= Number(minPrice))
-                });
-        } else if (maxPrice) {
-            flightsToShow = flightsToShow
-                .filter(item => {
-                    return (item.flight.price.total.amount <= Number(maxPrice))
+                    return (item.flight.price.total.amount <= maxPrice)
                 });
         }
-
-        let enabledCompaniesFilters = companiesFilter.filter(filter => filter.enabled).map(filter => filter.name);
 
         if (enabledCompaniesFilters && enabledCompaniesFilters.length > 0) {
-
-            flightsToShow = flightsToShow.filter(flight => enabledCompaniesFilters.includes(flight.flight.carrier.caption))
-            // console.log(flightsToShow.filter(flight => enabledCompaniesFilters.includes(flight.flight.carrier.caption)));
-        
+            flightsToShow = flightsToShow.filter(flight => enabledCompaniesFilters.includes(flight.flight.carrier.caption))        
         }
 
-        return sort(sorter, flightsToShow);
-    }
+        return sortFligths(sorter, flightsToShow);
 
-    const flights = getData();
+    }, [allFlights, oneTransfer, noTransfer, companiesFilter, minPrice, maxPrice, sorter]);
+
+
+    const clickHandler = () => {
+        setFlightsQuantity(flightsQuantity + 2);
+    }
 
     const companyFilterChangeHandler = (itemKey: string, enabled: boolean) => {
         setCompaniesFilter(prev => {
             let filter = prev.find(item => item.key === itemKey);
             
-
             if (!filter) {
                 return prev
             } else {
@@ -96,13 +89,6 @@ function FindTicketsPage() {
                 }
                 
                 return [...prev];
-
-                // filter.enabled = enabled;
-
-                // return [
-                //     ...prev.filter(item => item.key !== itemKey),
-                //     filter
-                // ];
             }
         })
     }
@@ -111,17 +97,15 @@ function FindTicketsPage() {
         <div className={styles.page}>
             <Sidebar>
                 <div className={styles.filter}>
-                    <Sorter onChange={(e) => {setSorter(e.target.value)}} sorter={sorter} />
+                    <Sorter sorter={sorter} onChange={newSorter => setSorter(newSorter)} />
                     <TransferFilter
-                        onChangeIsTransfer={(e) => {setSingleTransfer(e.target.checked)}}
-                        onChangeNoTransfer={(e) => {setNoTransfer(e.target.checked)}}
-                        singleTransfer={singleTransfer}
-                        noTransfer={noTransfer}  />
+                        oneTransfer={oneTransfer} onOneTransferChange={value => setOneTransfer(value)}                        
+                        noTransfer={noTransfer} onNoTransferChange={value => setNoTransfer(value)}
+                    />
                     <PriceFilter 
-                        onChangePriceMin={(e) => {setMinPrice(e.target.value)}}
-                        onChangePriceMax={(e) => {setMaxPrice(e.target.value)}}
-                        minPrice={minPrice}
-                        maxPrice={maxPrice}/>
+                        minPrice={minPrice} onMinPriceChange={min => setMinPrice(min)}
+                        maxPrice={maxPrice} onMaxPriceChange={max => setMaxPrice(max)}
+                    />
                     <CompaniesFilter filters={companiesFilter} onChange={companyFilterChangeHandler} />
                 </div>
             </Sidebar>
@@ -153,5 +137,20 @@ const initCompanyFilters = (allFlights: any[]): CompanyFilterItem[] => {
         enabled: false,
     } as CompanyFilterItem));
 }
-  
+
+const sortFligths = (sortType: SorterType, fligths: any[]) => {
+    switch(sortType) {
+        case 'duration': 
+            return fligths.sort((item1: any, item2: any) => {
+                return (item1.flight?.legs[0]?.duration + item1.flight.legs[1].duration) - (item2.flight?.legs[0]?.duration + item2.flight.legs[1].duration)
+            });
+        case 'price_desc':
+            return fligths.sort((item1: any, item2: any) => item2.flight.price.total.amount - item1.flight.price.total.amount);
+        case 'price_asc': 
+            return fligths.sort((item1: any, item2: any) => item1.flight.price.total.amount - item2.flight.price.total.amount);
+        default:
+            return fligths;
+      }
+}
+
 export default FindTicketsPage;

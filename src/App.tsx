@@ -1,5 +1,5 @@
-import styles from './App.module.css';
 import FindTicketsPage from './findTicketsPage/findTicketsPage';
+import styles from './App.module.css';
 
 function App() {
 

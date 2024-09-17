@@ -1,13 +1,12 @@
-import styles from './ticket.module.css';
+import { useState, useEffect } from 'react';
+import { DepartureAndArrival } from '../../types';import { setDuration } from '../../utils/utils';
 import arrow from '../../assets/images/arrow-right.svg';
 import clockIcon from '../../assets/images/clock-icon.svg';
 import AirportInfo from '../airportInfo/airportInfo';
-import { setDuration } from '../../utils/utils';
-import { useState, useEffect } from 'react';
-import { DepartureAndArrival } from '../../types';
 import TimeAndDate from '../timeAndDate/timeAndDate';
+import styles from './ticket.module.css';
 
-function Ticket(ticketInfo: any) {
+const Ticket = (ticketInfo: any) => {
     const [ isTransfer, setIsTransfer ] = useState<boolean>(false);
     const ticket = ticketInfo?.ticketInfo?.segments;
     const ticketDuration = ticketInfo?.ticketInfo?.duration;

@@ -3,7 +3,3 @@ export type DepartureAndArrival = {
     airportUid: string,
     city: string
 }
-
-// export type Filter = {
-    
-// }

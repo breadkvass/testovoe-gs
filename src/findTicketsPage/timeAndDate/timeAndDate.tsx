@@ -1,7 +1,14 @@
-import styles from './timeAndDate.module.css';
+import { FC } from 'react';
 import { setTime, setDate } from '../../utils/utils';
+import styles from './timeAndDate.module.css';
 
-function TimeAndDate({reverse, date, side}: {reverse: boolean, date: Date, side: 'left' | 'right'} ) {
+export type TimeAndDateProps = {
+    reverse: boolean,
+    date: Date,
+    side: 'left' | 'right'
+}
+
+const TimeAndDate: FC<TimeAndDateProps> = ({reverse, date, side}) =>{
 
     let styleDate = styles.date;
     let styleSide = side === 'left' ? styles.left : styles.right;
