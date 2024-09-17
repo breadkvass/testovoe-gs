@@ -15,28 +15,16 @@ function FindTicketsPage() {
     const [ allFlights, setAllFlights ] = useState<any[]>([]);
     const [ singleTransfer, setSingleTransfer ] = useState<boolean>(false);
     const [ noTransfer, setNoTransfer ] = useState<boolean>(false);
+    const [ minPrice, setMinPrice ] = useState('')
+    const [ maxPrice, setMaxPrice ] = useState('')
 
 
     const clickHandler = () => {
         setFlightsQuantity(flightsQuantity + 2);
     }
-
-    
-
-    // function transferFilter(arr: any[]) {
-    //     return [...arr].filter((item: any) => {
-    //         return (item.flight.legs[0].segments.length > 1) || (item.flight.legs[1].segments.length > 1)
-    //     })
-    // }
-
-    // function transferNoFilter(arr: any[]) {
-    //     return [...arr].filter((item: any) => {
-    //         return (item.flight.legs[0].segments.length === 1) && (item.flight.legs[1].segments.length === 1)
-    //     });
-    // }
     
     useEffect(() => {
-        fetch('../../flights.json')
+        fetch('./flights.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Ой, ошибка в fetch: ' + response.statusText);
@@ -58,12 +46,25 @@ function FindTicketsPage() {
                     return (noTransfer && ((item.flight.legs[0].segments.length === 1) && (item.flight.legs[1].segments.length === 1)))
                         || (singleTransfer && ((item.flight.legs[0].segments.length === 2) || (item.flight.legs[1].segments.length === 2)))
                 });
-            console.log(flightsToShow);
         } 
-        // if (minPrice || maxPrice) {
-        //     flightsToShow = flightsToShow
-        //         .filter( ... )
-        // }
+
+        if (minPrice && maxPrice) {
+            flightsToShow = flightsToShow
+                .filter(item => {
+                    return ((item.flight.price.total.amount >= Number(minPrice)) && (item.flight.price.total.amount <= Number(maxPrice)))
+                });
+        } else if (minPrice) {
+            flightsToShow = flightsToShow
+                .filter(item => {
+                    return (item.flight.price.total.amount >= Number(minPrice))
+                });
+        } else if (maxPrice) {
+            flightsToShow = flightsToShow
+                .filter(item => {
+                    return (item.flight.price.total.amount <= Number(maxPrice))
+                });
+        }
+        
         return sort(sorter, flightsToShow);
     }
 
@@ -79,7 +80,11 @@ function FindTicketsPage() {
                         onChangeNoTransfer={(e) => {setNoTransfer(e.target.checked)}}
                         singleTransfer={singleTransfer}
                         noTransfer={noTransfer}  />
-                    <PriceFilter />
+                    <PriceFilter 
+                        onChangePriceMin={(e) => {setMinPrice(e.target.value)}}
+                        onChangePriceMax={(e) => {setMaxPrice(e.target.value)}}
+                        minPrice={minPrice}
+                        maxPrice={maxPrice}/>
                     <CompaniesFilter />
                 </div>
             </Sidebar>
@@ -87,7 +92,7 @@ function FindTicketsPage() {
                 <ul className={styles.list}>
                     {flights?.slice(0, flightsQuantity).map((item: any) => (<FullTicket key={uuidv4()} flight={item}/>))}
                 </ul>
-                {allFlights?.length > 2 && <button className={styles.button} onClick={clickHandler}>Показать ещё</button>}
+                {flights?.length > 2 && <button className={styles.button} onClick={clickHandler}>Показать ещё</button>}
             </div>
             
         </div>
