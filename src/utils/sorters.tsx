@@ -9,3 +9,7 @@ export function sort(sortingType: string, arr: any[]) {
         });
     }
 }
+
+// export function companyFilter(company: string, arr: any[]) {
+//     return
+// }
